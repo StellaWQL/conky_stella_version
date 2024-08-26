@@ -1,0 +1,63 @@
+#!/usr/bin/conky -d -c
+# .conkyrc configuration for displaying weather info from OpenWeatherMap
+#
+alignment top_left
+xinerama_head 1 #show on second display
+background yes
+border_width 5
+color1 86E3CE #mint
+color2 FAB1C7 #pink
+color3 D0E6A5 #green
+color4 FA897B
+color5 CCABDB #purple
+
+double_buffer yes
+draw_borders no
+draw_graph_borders no
+draw_outline no
+draw_shades no
+gap_x 10
+gap_y 10
+max_user_text 30000
+maximum_width 1200 
+minimum_size 300
+net_avg_samples 2
+no_buffers yes
+override_utf8_locale yes
+own_window yes
+own_window_colour 000000
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_argb_visual yes
+own_window_transparent yes
+own_window_type normal
+own_window_class override 
+pad_percents 2
+short_units yes
+stippled_borders 3
+text_buffer_size 10000
+total_run_times 0
+update_interval 1.0
+uppercase no
+use_spacer right
+use_xft yes
+xftalpha 0.75
+xftfont sans:size=10
+
+TEXT
+${color1}${font DejaVu Sans Mono:size=15}Weather${font}$hr
+
+${color2}${font DejaVu Sans Mono:size=12}Current Temp: ${execpi 1800 ~/.config/conky/open_weather_map.sh | head -n 1}°C
+
+${color2}${font DejaVu Sans Mono:size=12}Today:
+${color3}${font DejaVu Sans Mono:size=10}Min-Max Temp: ${execpi 1800 ~/.config/conky/open_weather_map.sh | head -n 2 | tail -n 1}°C
+${color3}${font DejaVu Sans Mono:size=10}Rain Prob: ${execpi 1800 ~/.config/conky/open_weather_map.sh | head -n 3 | tail -n 1}%
+${color3}${font DejaVu Sans Mono:size=10}Moon Phase: ${execpi 1800 ~/.config/conky/open_weather_map.sh | head -n 4 | tail -n 1}
+
+${color2}${font DejaVu Sans Mono:size=12}Tmr:
+${color3}${font DejaVu Sans Mono:size=10}Min-Max Temp: ${execpi 1800 ~/.config/conky/open_weather_map.sh | head -n 5 | tail -n 1}°C
+${color3}${font DejaVu Sans Mono:size=10}Rain Prob: ${execpi 1800 ~/.config/conky/open_weather_map.sh | head -n 6 | tail -n 1}%
+${color3}${font DejaVu Sans Mono:size=10}Moon Phase: ${execpi 1800 ~/.config/conky/open_weather_map.sh | head -n 7 | tail -n 1}
+
+${color1}${font DejaVu Sans Mono:size=15}Music${font}$hr
+
+${color2}${font DejaVu Sans Mono:size=10}${execpi 86400 python3 vinyl_music.py | awk -F'|' '{printf "%-50s %50s\n", $1, $2}'}

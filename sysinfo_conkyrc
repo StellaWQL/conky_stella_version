@@ -1,0 +1,119 @@
+#!/usr/bin/conky -d -c
+# .conkyrc configuration file for displaying system information.
+# code base is from didi79
+# https://www.deviantart.com/didi79/art/conky-config-127651851
+#
+# By Martynas J. 2021
+
+
+alignment top_right
+xinerama_head 1 #show on second display
+background yes
+border_width 5
+color0 FFADAD #graph color 1		
+color1 FFD6A5 #header color	
+color2 D9EDF8 #key color
+color3 DEDAF4 #graph color 2					
+color1 86E3CE #mint
+color2 FAB1C7 #pink
+color3 D0E6A5 #green
+color4 FA897B
+color0 CCABDB #purple
+
+cpu_avg_samples 2
+default_color e1e1e1		
+default_outline_color 000000	
+default_shade_color 000000
+double_buffer yes
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+gap_x 5
+gap_y 0
+max_user_text 10000
+maximum_width 250
+minimum_size 850
+net_avg_samples 2
+no_buffers yes
+override_utf8_locale yes
+own_window yes
+#own_window_colour 000000
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_argb_visual yes
+own_window_transparent yes
+own_window_type normal
+own_window_class override
+pad_percents 2			
+short_units yes			
+stippled_borders 3
+text_buffer_size 10000
+total_run_times 0
+update_interval 1.0
+uppercase no
+use_spacer right
+use_xft yes
+xftalpha 0.75
+xftfont sans:size=10
+
+TEXT
+
+#TIME
+${color1}${goto 45}${font DejaVu Sans Mono:size=54}${time %H}${font DejaVu Sans Mono:size=30}${voffset -25}'${time %M}${font DejaVu Sans Mono:size=18}${voffset -12}${time %S}
+${color1}${goto 140}${voffset 1}${font :size=10}${time %A}
+${color1}${goto 140}${voffset 1}${font :size=10}${time %d %B %Y}
+#CALENDAR
+${color1}${font Monospace:size=16}${execpi 60 DJS=$(date +%_d); gcal --starting-day=monday | sed s/'Mo Tu We Th Fr Sa Su'/'${color0}Mo Tu We Th Fr Sa Su${color2}'/g | sed s/'<'/' '/g | sed s/'>'/' '/g | sed s/" $DJS "/'${color1 red}'" $DJS "'${color3 white}'/g}
+
+#SYSTEM
+${color1}${font led:size=15}SYSTEM ${font}$hr
+${color2}${font led:size=10}CPU:${alignr}${color3}${exec cat /proc/cpuinfo | grep -m 1 name | awk '{$1=$2=$3=$4=""; print $0}'}
+${color2}${font led:size=10}GPU:${alignr}${color3}${exec nvidia-smi -q | grep "Product Name" | awk -F ":" '{print $2}'} ${exec nvidia-smi -q | grep "Driver Version" | awk -F ":" '{print $2}'}
+${color2}${font led:size=10}MOBO:${alignr}${color3}${exec cat /sys/devices/virtual/dmi/id/board_vendor} ${exec cat /sys/devices/virtual/dmi/id/board_name}
+
+${color2}${font led:size=10}OS:${alignr}${color3}${exec cat /etc/lsb-release | grep DISTRIB_DESCRIPTION | cut -f2 -d'='}
+${color2}${font led:size=10}Kernel: ${alignr}${color3}$kernel
+${color2}${font led:size=10}Uptime:${alignr}${color3}${uptime}
+
+#CPU
+${voffset -10}${color1}${font led:size=15}CPU ${font}$hr
+${color2}CPU Temp:$color2 ${alignr} ${exec sensors | grep Tdie | awk '{print $2 " "}' | tr --delete "+)"}
+${color2}CPU Usage:$color2 ${alignr} $cpu% 
+${color0} ${cpugraph 40}
+
+#TOP CPU/RAM
+${voffset -7}${color1}${font}NAME ${goto 125}PID${goto 165}CPU%${goto 215}MEM%
+${color2}${font :size=10}${goto 9}${top name 1}${color3}${goto 115}${top pid 1}${goto 160}${top cpu 1}${goto 210}${top mem 1}
+${color2}${font :size=10}${goto 9}${top name 2}${color3}${goto 115}${top pid 2}${goto 160}${top cpu 2}${goto 210}${top mem 2}
+${color2}${font :size=10}${goto 9}${top name 3}${color3}${goto 115}${top pid 3}${goto 160}${top cpu 3}${goto 210}${top mem 3}
+${color2}${font :size=10}${goto 9}${top name 4}${color3}${goto 115}${top pid 4}${goto 160}${top cpu 4}${goto 210}${top mem 4}
+${color2}${font :size=10}${goto 9}${top name 5}${color3}${goto 115}${top pid 5}${goto 160}${top cpu 5}${goto 210}${top mem 5}
+
+#GPU
+${voffset -10}${color1}${font led:size=15}GPU ${font}$hr
+${color2}GPU Temp:$color3 ${alignr} ${execpi 1 nvidia-smi -q -d TEMPERATURE | grep "GPU Current Temp" | awk '{print $5}'}°C
+${color2}GPU Usage:$color3 ${alignr} ${execpi 1 nvidia-smi -q -d UTILIZATION | grep Gpu | awk '{print $3 $4}'}
+
+#RAM
+${voffset -6}${color1}${font led:size=15}RAM${font}$hr
+${color2}${font :size=10}RAM:${goto 100}${color3}${mem} / ${memmax} ${alignr} ${memperc}%
+${color0}${membar 12}
+
+#DRIVES
+${voffset -6}${color1}${font led:size=15}DRIVE${font}$hr
+${color2}${font :size=10}root:${goto 100}${color3}${fs_used /} / ${fs_size /} ${alignr} ${fs_used_perc /}%
+${color0}${fs_bar 10 /}
+
+${color2}${font :size=10}DATA:${goto 100}${color3}${fs_used /mnt/DATA} / ${fs_size /mnt/DATA} ${alignr} ${fs_used_perc /mnt/DATA}%
+${color0}${fs_bar 10 /mnt/DATA}
+
+#NETWORK
+${voffset -10}${color1}${font led:size=15}NETWORK${font}$hr
+${color2}${font :size=10}gateway: ${color3}${alignr}${gw_ip}
+${color2}${font :size=10}local eth: ${color3}$alignr${addr enp5s0}
+${color2}${font :size=10}public: ${alignr}${color3}${execpi 60 curl -s ipinfo.io > /tmp/publicIP.tmp; python3 ~/.config/conky/get_publicIP.py IP; python3 ~/.config/conky/get_publicIP.py COUNTRY; python3 ~/.config/conky/get_publicIP.py CITY; python3 ~/.config/conky/get_publicIP.py ORG}
+#Alternatively check public ip from api.ipify.org
+#${color2}${font :size=10}public: ${alignr}${color}${execi 60 curl -s https://api.ipify.org/?format=raw}
+
+${color2}Down: ${color3}${downspeed enp5s0} (${totaldown enp5s0})${alignr}${color2}Up: ${color}${upspeed enp5s0} (${totalup enp5s0}) 
+${color3}${downspeedgraph enp5s0 40,110 FA5858 FA5858 -t}${alignr}${color0}${upspeedgraph enp5s0 40,110 8258FA 8258FA -t}
